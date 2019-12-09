@@ -12,5 +12,4 @@ public class ResponseMetadata {
   private String sortBy;
   private String correlationId;
   private String requestId;
-  
 }

@@ -1,22 +1,18 @@
 package com.yaji.traderev.carauction.filter;
 
+import com.yaji.traderev.carauction.constants.HeaderConstants;
+import com.yaji.traderev.carauction.logs.IdGenerator;
 import java.io.IOException;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-
-import com.yaji.traderev.carauction.constants.HeaderConstants;
-import com.yaji.traderev.carauction.logs.IdGenerator;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Order(30)
 @Slf4j
@@ -39,7 +35,7 @@ public class LoggingInterceptorFilter extends HttpFilter {
     if (requestId == null || requestId.isEmpty()) {
       requestId = idGenerator.generateStringId();
     }
-    
+
     log.info("correlationId: {} ; requestId : {}");
     MDC.put(HeaderConstants.CORRELATION_ID_HEADERNAME, correlationId);
     MDC.put(HeaderConstants.REQUEST_ID_HEADERNAME, requestId);

@@ -1,17 +1,14 @@
 package com.yaji.traderev.carauction.filter;
 
+import com.yaji.traderev.carauction.constants.HeaderConstants;
 import java.io.IOException;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-
-import com.yaji.traderev.carauction.constants.HeaderConstants;
 
 @Order(40)
 @Component

@@ -1,13 +1,12 @@
 package com.yaji.traderev.carauction.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.yaji.traderev.carauction.exception.translation.ErrorPropertiesReader;
 import com.yaji.traderev.carauction.logs.IdGenerator;
 import com.yaji.traderev.carauction.logs.UUIDGenerator;
 import com.yaji.traderev.carauction.util.DtoToEntityMergingUtil;
 import com.yaji.traderev.carauction.util.LocaleUtil;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class BeanCreation {
@@ -21,15 +20,14 @@ public class BeanCreation {
   public DtoToEntityMergingUtil dtoToEntityMergingUtil() {
     return new DtoToEntityMergingUtil();
   }
-  
+
   @Bean
-  public ErrorPropertiesReader errorPropertiesReader(){
-	  return new ErrorPropertiesReader();
+  public ErrorPropertiesReader errorPropertiesReader() {
+    return new ErrorPropertiesReader();
   }
-  
+
   @Bean
-  public LocaleUtil localeUtil(){
-	  return new LocaleUtil();
+  public LocaleUtil localeUtil() {
+    return new LocaleUtil();
   }
-  
 }

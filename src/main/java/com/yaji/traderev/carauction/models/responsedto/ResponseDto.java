@@ -12,5 +12,4 @@ public class ResponseDto<T> {
   private ResponseMetadata metadata;
   private List<ResponseError> errors;
   private T body;
-  
 }

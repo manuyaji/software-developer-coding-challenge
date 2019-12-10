@@ -22,7 +22,7 @@ public enum Role {
       case 100:
         return USER_NORMAL;
       case 101:
-          return USER_PRIME;
+        return USER_PRIME;
       default:
         return null;
     }

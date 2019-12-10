@@ -2,7 +2,6 @@ package com.yaji.traderev.carauction.models.requestdto;
 
 import com.yaji.traderev.carauction.enums.MemberType;
 import com.yaji.traderev.carauction.enums.Role;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +21,7 @@ public class UserRequestDto {
   @NoArgsConstructor
   @AllArgsConstructor
   public static class UserRequestDtoInfo {
-	  private Role role;
-	  private MemberType memberType;
+    private Role role;
+    private MemberType memberType;
   }
 }

@@ -1,24 +1,20 @@
 package com.yaji.traderev.carauction.filter;
 
+import com.yaji.traderev.carauction.constants.HeaderConstants;
+import com.yaji.traderev.carauction.metrics.collector.IRequestResponseDataCollector;
+import com.yaji.traderev.carauction.metrics.model.RequestResponseData;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-
-import com.yaji.traderev.carauction.constants.HeaderConstants;
-import com.yaji.traderev.carauction.metrics.collector.IRequestResponseDataCollector;
-import com.yaji.traderev.carauction.metrics.model.RequestResponseData;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Order(40)
 @Slf4j
@@ -28,9 +24,8 @@ public class MetricsFilter extends HttpFilter {
   @Autowired
   @Qualifier("metricsCollectorExecutorService")
   private ExecutorService metricsCollectorExecutorService;
-  
-  @Autowired
-  private IRequestResponseDataCollector dataCollector;
+
+  @Autowired private IRequestResponseDataCollector dataCollector;
 
   @Override
   protected void doFilter(
@@ -46,21 +41,26 @@ public class MetricsFilter extends HttpFilter {
       collectData(request, response, appResponseTime);
     }
   }
-  
-  private void collectData(HttpServletRequest request, HttpServletResponse response, long appResponseTime){
-	  try{
-		  Integer responseSize = Integer.parseInt(response.getHeader("content-length"));
-		  RequestResponseData data = RequestResponseData.builder().apiPath(request.getRequestURI())
-				  .clientIp(request.getRemoteAddr()).processingTimeMs(appResponseTime)
-				  .requestUrl(request.getRequestURL().toString())
-				  .responseCode(response.getStatus())
-				  .responseSize(responseSize)
-				  .serverIp(request.getLocalAddr())
-				  .serverName(request.getServerName())
-				  .requestSize(request.getContentLength()).build();
-		  metricsCollectorExecutorService.submit(() -> dataCollector.collect(data));
-	  } catch(Exception e){
-		  log.error("Error while pushing request-response metrics.",e);
-	  }
+
+  private void collectData(
+      HttpServletRequest request, HttpServletResponse response, long appResponseTime) {
+    try {
+      Integer responseSize = Integer.parseInt(response.getHeader("content-length"));
+      RequestResponseData data =
+          RequestResponseData.builder()
+              .apiPath(request.getRequestURI())
+              .clientIp(request.getRemoteAddr())
+              .processingTimeMs(appResponseTime)
+              .requestUrl(request.getRequestURL().toString())
+              .responseCode(response.getStatus())
+              .responseSize(responseSize)
+              .serverIp(request.getLocalAddr())
+              .serverName(request.getServerName())
+              .requestSize(request.getContentLength())
+              .build();
+      metricsCollectorExecutorService.submit(() -> dataCollector.collect(data));
+    } catch (Exception e) {
+      log.error("Error while pushing request-response metrics.", e);
+    }
   }
 }

@@ -1,7 +1,7 @@
 package com.yaji.traderev.carauction.enums;
 
 public enum ErrorCode {
-	AUCTIONS_NOT_FOUND,
+  AUCTIONS_NOT_FOUND,
   AUCTION_RESOURCE_NOT_FOUND,
   BID_RESOURCE_NOT_FOUND,
   BIDS_NOT_FOUND,

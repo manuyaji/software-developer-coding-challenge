@@ -19,7 +19,7 @@ public class UserInfoRequestDto {
   @NoArgsConstructor
   @AllArgsConstructor
   public static class UserInfoRequestDtoInfo {
-	  private Integer userId;
+    private Integer userId;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -31,6 +31,5 @@ public class UserInfoRequestDto {
     private String zipcode;
     private String driversLicenseNum;
     private String driversLicenseImageInfo;
-    
   }
 }

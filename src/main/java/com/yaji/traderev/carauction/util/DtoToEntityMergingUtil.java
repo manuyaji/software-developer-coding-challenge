@@ -73,92 +73,90 @@ public class DtoToEntityMergingUtil {
     }
     return original;
   }
-  
+
   public CarInfo mergeCarInfoWithDto(CarInfo original, CarInfoRequestDto dto) {
-	    if (original == null) {
-	      original = new CarInfo();
-	    }
-	    if (dto != null) {
-	      CarInfoRequestDtoInfo info = dto.getInfo();
-	      if (dto.isShouldOverwriteAllFields() || info.getManufacturer() != null) {
-	        original.setManufacturer(info.getManufacturer());
-	      }
-	      if (dto.isShouldOverwriteAllFields() || info.getModel() != null) {
-	        original.setModel(info.getModel());
-	      }
-	      if (dto.isShouldOverwriteAllFields() || info.getOwnerId() != null) {
-	        original.getOwner().setId(info.getOwnerId());
-	      }
-	      if (dto.isShouldOverwriteAllFields() || info.getYear() != null) {
-	        original.setYear(info.getYear());
-	      }
-	    }
-	    return original;
-	  }
-  
+    if (original == null) {
+      original = new CarInfo();
+    }
+    if (dto != null) {
+      CarInfoRequestDtoInfo info = dto.getInfo();
+      if (dto.isShouldOverwriteAllFields() || info.getManufacturer() != null) {
+        original.setManufacturer(info.getManufacturer());
+      }
+      if (dto.isShouldOverwriteAllFields() || info.getModel() != null) {
+        original.setModel(info.getModel());
+      }
+      if (dto.isShouldOverwriteAllFields() || info.getOwnerId() != null) {
+        original.getOwner().setId(info.getOwnerId());
+      }
+      if (dto.isShouldOverwriteAllFields() || info.getYear() != null) {
+        original.setYear(info.getYear());
+      }
+    }
+    return original;
+  }
+
   public UserInfo mergeUserInfoWithDto(UserInfo original, UserInfoRequestDto dto) {
-	    if (original == null) {
-	      original = new UserInfo();
-	    }
-	    if (dto != null) {
-	    	UserInfoRequestDtoInfo info = dto.getInfo();
-	      if (dto.isShouldOverwriteAllFields() || info.getAddress() != null) {
-	        original.setPrimaryAddress(info.getAddress());
-	      }
-	      if (dto.isShouldOverwriteAllFields() || info.getAlternateEmailAddress() != null) {
-	        original.setAlternateEmailAddress(info.getAlternateEmailAddress());
-	      }
-	      if (dto.isShouldOverwriteAllFields() || info.getAlternatePhoneNumber() != null) {
-	        original.setAlternatePhoneNumber(info.getAlternatePhoneNumber());
-	      }
-	      if (dto.isShouldOverwriteAllFields() || info.getDriversLicenseImageInfo() != null) {
-	        original.setDriversLicenseImageInfo(info.getDriversLicenseImageInfo());
-	      }
-	      if (dto.isShouldOverwriteAllFields() || info.getDriversLicenseNum() != null) {
-		        original.setDriversLicenseNum(info.getDriversLicenseNum());
-		      }
-	      if (dto.isShouldOverwriteAllFields() || info.getEmailAddress() != null) {
-	    	  original.setEmailAddress(info.getEmailAddress());
-		      }
-	      
-	      
-	      if (dto.isShouldOverwriteAllFields() || info.getFirstName() != null) {
-		       original.setFirstName(info.getFirstName()); 
-		      }
-	      if (dto.isShouldOverwriteAllFields() || info.getLastName() != null) {
-		        original.setLastName(info.getLastName());
-	      }
-	      if (dto.isShouldOverwriteAllFields() || info.getMiddleName() != null) {
-		        original.setMiddleName(info.getMiddleName());
-	      }
-	      if (dto.isShouldOverwriteAllFields() || info.getPhoneNumber() != null) {
-		      original.setPhoneNumber(info.getPhoneNumber());  
-	      }
-	      if (dto.isShouldOverwriteAllFields() || info.getUserId() != null) {
-		     original.getUser().setId(info.getUserId());   
-	      }
-	      
-	      if (dto.isShouldOverwriteAllFields() || info.getZipcode() != null) {
-		        original.setZipcode(info.getZipcode());
-	      }
-	      
-	    }
-	    return original;
-	  }
-  
+    if (original == null) {
+      original = new UserInfo();
+    }
+    if (dto != null) {
+      UserInfoRequestDtoInfo info = dto.getInfo();
+      if (dto.isShouldOverwriteAllFields() || info.getAddress() != null) {
+        original.setPrimaryAddress(info.getAddress());
+      }
+      if (dto.isShouldOverwriteAllFields() || info.getAlternateEmailAddress() != null) {
+        original.setAlternateEmailAddress(info.getAlternateEmailAddress());
+      }
+      if (dto.isShouldOverwriteAllFields() || info.getAlternatePhoneNumber() != null) {
+        original.setAlternatePhoneNumber(info.getAlternatePhoneNumber());
+      }
+      if (dto.isShouldOverwriteAllFields() || info.getDriversLicenseImageInfo() != null) {
+        original.setDriversLicenseImageInfo(info.getDriversLicenseImageInfo());
+      }
+      if (dto.isShouldOverwriteAllFields() || info.getDriversLicenseNum() != null) {
+        original.setDriversLicenseNum(info.getDriversLicenseNum());
+      }
+      if (dto.isShouldOverwriteAllFields() || info.getEmailAddress() != null) {
+        original.setEmailAddress(info.getEmailAddress());
+      }
+
+      if (dto.isShouldOverwriteAllFields() || info.getFirstName() != null) {
+        original.setFirstName(info.getFirstName());
+      }
+      if (dto.isShouldOverwriteAllFields() || info.getLastName() != null) {
+        original.setLastName(info.getLastName());
+      }
+      if (dto.isShouldOverwriteAllFields() || info.getMiddleName() != null) {
+        original.setMiddleName(info.getMiddleName());
+      }
+      if (dto.isShouldOverwriteAllFields() || info.getPhoneNumber() != null) {
+        original.setPhoneNumber(info.getPhoneNumber());
+      }
+      if (dto.isShouldOverwriteAllFields() || info.getUserId() != null) {
+        original.getUser().setId(info.getUserId());
+      }
+
+      if (dto.isShouldOverwriteAllFields() || info.getZipcode() != null) {
+        original.setZipcode(info.getZipcode());
+      }
+    }
+    return original;
+  }
+
   public User mergeCarInfoWithDto(User original, UserRequestDto dto) {
-	    if (original == null) {
-	      original = new User();
-	    }
-	    if (dto != null) {
-	    	UserRequestDtoInfo info = dto.getInfo();
-	      if (dto.isShouldOverwriteAllFields() || info.getMemberType() != null) {
-	        original.setMemberType(info.getMemberType());
-	      }
-	      if (dto.isShouldOverwriteAllFields() || info.getRole() != null) {
-	        original.setRole(info.getRole());
-	      }
-	    }
-	    return original;
-	  }
+    if (original == null) {
+      original = new User();
+    }
+    if (dto != null) {
+      UserRequestDtoInfo info = dto.getInfo();
+      if (dto.isShouldOverwriteAllFields() || info.getMemberType() != null) {
+        original.setMemberType(info.getMemberType());
+      }
+      if (dto.isShouldOverwriteAllFields() || info.getRole() != null) {
+        original.setRole(info.getRole());
+      }
+    }
+    return original;
+  }
 }

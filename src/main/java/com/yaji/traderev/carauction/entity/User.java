@@ -1,6 +1,7 @@
 package com.yaji.traderev.carauction.entity;
 
 import com.yaji.traderev.carauction.enums.MemberType;
+import com.yaji.traderev.carauction.enums.Role;
 import com.yaji.traderev.carauction.enums.UserAccountStatus;
 import java.time.ZonedDateTime;
 import javax.persistence.CascadeType;
@@ -23,6 +24,9 @@ public class User extends IntegerIdUpdatableTable {
 
   @Column(name = "password")
   private String password;
+
+  @Column(name = "role")
+  private Role role;
 
   @Column(name = "failed_attempts")
   private int failedAttempts;

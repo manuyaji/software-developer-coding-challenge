@@ -39,13 +39,7 @@ public class UserInfo extends IntegerIdUpdatableTable {
   @Column(name = "primary_address")
   private String primaryAddress;
 
-  @Column(name = "alternate_address")
-  private String alternateAddress;
-
   @Column(name = "primary_zipcode")
-  private String alternateZipcode;
-
-  @Column(name = "alternate_zipcode")
   private String zipcode;
 
   @JoinColumn(name = "user_id")

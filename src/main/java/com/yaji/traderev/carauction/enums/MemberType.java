@@ -4,9 +4,24 @@ public enum MemberType {
   PRIME(200),
   NORMAL(1);
 
-  private int type;
+  private int typeId;
 
-  MemberType(int type) {
-    this.type = type;
+  MemberType(int typeId) {
+    this.typeId = typeId;
+  }
+
+  public int getTypeId() {
+    return typeId;
+  }
+
+  public static MemberType getMemberTypeFromTypeId(Integer typeId) {
+    switch (typeId) {
+      case 1:
+        return NORMAL;
+      case 200:
+        return PRIME;
+      default:
+        return null;
+    }
   }
 }

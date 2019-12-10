@@ -1,6 +1,7 @@
 package com.yaji.traderev.carauction.models.requestdto;
 
 import java.time.ZonedDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

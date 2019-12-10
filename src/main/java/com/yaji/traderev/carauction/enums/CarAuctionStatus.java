@@ -14,4 +14,29 @@ public enum CarAuctionStatus {
   CarAuctionStatus(int statusCode) {
     this.statusCode = statusCode;
   }
+
+  public int getStatusCode() {
+    return statusCode;
+  }
+
+  public static CarAuctionStatus getCarAuctionStatusFromStatusCode(Integer statCode) {
+    switch (statCode) {
+      case 100:
+        return UNVERIFIED;
+      case 110:
+        return VERIFICATION_IN_PROGRESS;
+      case 200:
+        return AUCTION_SCHEDULED;
+      case 210:
+        return READY_TO_AUCTION;
+      case 300:
+        return AUCTION_IN_PROGRESS;
+      case 400:
+        return SOLD;
+      case 500:
+        return UNSOLD;
+      default:
+        return null;
+    }
+  }
 }

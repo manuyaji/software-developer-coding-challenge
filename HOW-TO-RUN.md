@@ -86,7 +86,7 @@ curl -X GET http://localhost:8080/auctions/{auctionId}/bids/history
 ```
 
 ### TESTING
-## HAPPY FLOW
+#### HAPPY FLOW
 1. Create an auction
 ```
 curl -X POST \
@@ -183,7 +183,7 @@ curl -X GET http://localhost:8080/auctions/1
 curl -X GET http://localhost:8080/auctions/{auctionId}/bids/history 
 ```
 
-## NEGATIVE FLOWS
+#### NEGATIVE FLOWS
 1. You may try APIs in a different order from the one given in the above section. Though I can't say all are neatly implemented, I have tried to take care of common flows. As mentioned below, scenarios with invalid users have not been handled. 
 
 

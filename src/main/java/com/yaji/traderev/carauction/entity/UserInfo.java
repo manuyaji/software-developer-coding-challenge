@@ -51,4 +51,18 @@ public class UserInfo extends IntegerIdUpdatableTable {
 
   @Column(name = "drivers_license_image_info")
   private String driversLicenseImageInfo;
+
+  public static UserInfo createNew(User user) {
+    UserInfo userInfo = new UserInfo();
+    userInfo.setUser(user);
+    return userInfo;
+  }
+
+  public static UserInfo createNew(Integer userId) {
+    User user = new User();
+    user.setId(userId);
+    UserInfo userInfo = new UserInfo();
+    userInfo.setUser(user);
+    return userInfo;
+  }
 }

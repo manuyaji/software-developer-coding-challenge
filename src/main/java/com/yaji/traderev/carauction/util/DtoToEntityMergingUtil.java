@@ -15,14 +15,15 @@ import com.yaji.traderev.carauction.models.requestdto.UserInfoRequestDto;
 import com.yaji.traderev.carauction.models.requestdto.UserInfoRequestDto.UserInfoRequestDtoInfo;
 import com.yaji.traderev.carauction.models.requestdto.UserRequestDto;
 import com.yaji.traderev.carauction.models.requestdto.UserRequestDto.UserRequestDtoInfo;
+import javax.validation.constraints.NotNull;
 
 public class DtoToEntityMergingUtil {
 
-  public CarAuction mergeCarAuctionWithDto(CarAuction original, CarAuctionRequestDto dto) {
-    if (original == null) {
-      original = new CarAuction();
-    }
-    if (dto != null) {
+  public CarAuction mergeCarAuctionWithDto(CarAuction original, @NotNull CarAuctionRequestDto dto) {
+    if (dto.getInfo() != null) {
+      if (original == null) {
+        original = CarAuction.createNew();
+      }
       CarAuctionRequestDtoInfo info = dto.getInfo();
       if (dto.isShouldOverwriteAllFields() || info.getAuctionDate() != null) {
         original.setAuctionDate(info.getAuctionDate());
@@ -40,7 +41,7 @@ public class DtoToEntityMergingUtil {
         original.getSeller().setId(info.getSellerId());
       }
       if (dto.isShouldOverwriteAllFields() || info.getSellingBidId() != null) {
-        original.getSellingBid().setId(info.getSellingBidId());
+        original.setSellingBidId(info.getSellingBidId());
       }
       if (dto.isShouldOverwriteAllFields() || info.getSellingPrice() != null) {
         original.setSellingPrice(info.getSellingPrice());
@@ -52,12 +53,12 @@ public class DtoToEntityMergingUtil {
     return original;
   }
 
-  public CarBid mergeCarBidWithDto(CarBid original, CarBidRequestDto dto) {
-    if (original == null) {
-      original = new CarBid();
-    }
-    if (dto != null) {
+  public CarBid mergeCarBidWithDto(CarBid original, @NotNull CarBidRequestDto dto) {
+    if (dto.getInfo() != null) {
       CarBidRequestDtoInfo info = dto.getInfo();
+      if (original == null) {
+        original = CarBid.createNew(dto.getInfo().getCarAuctionId());
+      }
       if (dto.isShouldOverwriteAllFields() || info.getBidAmount() != null) {
         original.setBidAmount(info.getBidAmount());
       }
@@ -74,11 +75,11 @@ public class DtoToEntityMergingUtil {
     return original;
   }
 
-  public CarInfo mergeCarInfoWithDto(CarInfo original, CarInfoRequestDto dto) {
-    if (original == null) {
-      original = new CarInfo();
-    }
-    if (dto != null) {
+  public CarInfo mergeCarInfoWithDto(CarInfo original, @NotNull CarInfoRequestDto dto) {
+    if (dto.getInfo() != null) {
+      if (original == null) {
+        original = CarInfo.createNew();
+      }
       CarInfoRequestDtoInfo info = dto.getInfo();
       if (dto.isShouldOverwriteAllFields() || info.getManufacturer() != null) {
         original.setManufacturer(info.getManufacturer());
@@ -96,12 +97,12 @@ public class DtoToEntityMergingUtil {
     return original;
   }
 
-  public UserInfo mergeUserInfoWithDto(UserInfo original, UserInfoRequestDto dto) {
-    if (original == null) {
-      original = new UserInfo();
-    }
-    if (dto != null) {
+  public UserInfo mergeUserInfoWithDto(UserInfo original, @NotNull UserInfoRequestDto dto) {
+    if (dto.getInfo() != null) {
       UserInfoRequestDtoInfo info = dto.getInfo();
+      if (original == null) {
+        original = UserInfo.createNew(info.getUserId());
+      }
       if (dto.isShouldOverwriteAllFields() || info.getAddress() != null) {
         original.setPrimaryAddress(info.getAddress());
       }
@@ -144,11 +145,11 @@ public class DtoToEntityMergingUtil {
     return original;
   }
 
-  public User mergeCarInfoWithDto(User original, UserRequestDto dto) {
+  public User mergeCarInfoWithDto(User original, @NotNull UserRequestDto dto) {
     if (original == null) {
-      original = new User();
+      original = User.createNew();
     }
-    if (dto != null) {
+    if (dto.getInfo() != null) {
       UserRequestDtoInfo info = dto.getInfo();
       if (dto.isShouldOverwriteAllFields() || info.getMemberType() != null) {
         original.setMemberType(info.getMemberType());

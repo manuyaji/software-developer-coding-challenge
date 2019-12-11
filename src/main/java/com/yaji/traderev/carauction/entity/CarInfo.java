@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 public class CarInfo extends IntegerIdUpdatableTable {
 
   @JoinColumn(name = "owner")
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.EAGER)
   private User owner;
 
   @Column(name = "manufacturer")
@@ -27,4 +27,11 @@ public class CarInfo extends IntegerIdUpdatableTable {
 
   @Column(name = "year")
   private String year;
+
+  public static CarInfo createNew() {
+    CarInfo carInfo = new CarInfo();
+    User owner = User.createNew();
+    carInfo.setOwner(owner);
+    return carInfo;
+  }
 }

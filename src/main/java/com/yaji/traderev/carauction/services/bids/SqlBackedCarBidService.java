@@ -1,12 +1,18 @@
 package com.yaji.traderev.carauction.services.bids;
 
+import com.yaji.traderev.carauction.entity.CarAuction;
 import com.yaji.traderev.carauction.entity.CarBid;
 import com.yaji.traderev.carauction.enums.ErrorCode;
-import com.yaji.traderev.carauction.exception.TradeRevIllegalStateException;
+import com.yaji.traderev.carauction.enums.ResourceSortingOrder;
+import com.yaji.traderev.carauction.exception.TradeRevInvalidInputException;
 import com.yaji.traderev.carauction.exception.TradeRevResourceNotFoundException;
 import com.yaji.traderev.carauction.models.requestdto.CarBidRequestDto;
+import com.yaji.traderev.carauction.repository.db.CarBidRepository;
 import com.yaji.traderev.carauction.services.AbstractResourceService;
+import com.yaji.traderev.carauction.services.auctions.ICarAuctionService;
 import com.yaji.traderev.carauction.util.DtoToEntityMergingUtil;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
@@ -15,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 
 @Slf4j
@@ -23,13 +28,14 @@ public class SqlBackedCarBidService extends AbstractResourceService<CarBid, CarB
     implements ICarBidService {
 
   @Autowired private DtoToEntityMergingUtil dtoToEntityMergingUtil;
+  @Autowired private ICarAuctionService carAuctionService;
 
   @Override
   @Transactional
   @Modifying
   public CarBid modifyCarBid(
       @NotNull Integer auctionId, @NotNull Integer bidId, @NotNull CarBidRequestDto dto)
-      throws TradeRevIllegalStateException {
+      throws TradeRevInvalidInputException {
     CarBid original =
         repository
             .findById(bidId)
@@ -38,29 +44,84 @@ public class SqlBackedCarBidService extends AbstractResourceService<CarBid, CarB
                     new TradeRevResourceNotFoundException(
                         ErrorCode.BID_RESOURCE_NOT_FOUND, auctionId, bidId));
     if (!original.getCarAuction().getId().equals(auctionId)) {
-      throw new TradeRevIllegalStateException(
-          ErrorCode.WRONG_AUCTION_TO_BID_MAPPING, auctionId, bidId);
+      log.error("Cannot modify Bid. BidId {} does not belong to Auction {}", bidId, auctionId);
+      throw new TradeRevInvalidInputException(
+          ErrorCode.WRONG_AUCTION_TO_BID_MAPPING, bidId, auctionId);
     }
     CarBid merged = dtoToEntityMergingUtil.mergeCarBidWithDto(original, dto);
     CarBid bid = repository.save(merged);
     return bid;
   }
 
+  private boolean verifyAuctionable(CarAuction carAuction) {
+    if (!carAuction.isAlive()) {
+      if (carAuction.isClosed()) {
+        log.error(
+            "Could not create Bid as auction is closed for bidding. auctionId {} ",
+            carAuction.getId());
+        throw new TradeRevInvalidInputException(ErrorCode.AUCTION_CLOSED, carAuction.getId());
+      } else if (carAuction.isNotYetOpen()) {
+        log.error(
+            "Could not create Bid as auction is not yet open for bidding. auctionId {} ",
+            carAuction.getId());
+        throw new TradeRevInvalidInputException(ErrorCode.AUCTION_NOT_OPEN_YET, carAuction.getId());
+      } else {
+        log.error(
+            "Could not create Bid as auction is not open for bidding. auctionId {} ",
+            carAuction.getId());
+        throw new TradeRevInvalidInputException(ErrorCode.AUCTION_NOT_OPEN_YET, carAuction.getId());
+      }
+    }
+    return true;
+  }
+
   @Override
   @Transactional
   @Modifying
   public CarBid createCarBid(@NotNull Integer auctionId, @NotNull CarBidRequestDto dto)
-      throws TradeRevIllegalStateException {
+      throws TradeRevInvalidInputException, TradeRevResourceNotFoundException {
+    CarAuction carAuction = carAuctionService.getResource(auctionId);
+    verifyAuctionable(carAuction);
+
     if (dto.getInfo() != null && auctionId.equals(dto.getInfo().getCarAuctionId())) {
+      CarBid currentWinningBid = carAuctionService.getWinningBid(auctionId);
       CarBid bid = dtoToEntityMergingUtil.mergeCarBidWithDto(null, dto);
-      CarBid newBid = repository.save(bid);
-      return newBid;
+      double minAmount =
+          (currentWinningBid != null)
+              ? currentWinningBid.getBidAmount()
+              : carAuction.getOpeningBid();
+      if (bid.getBidAmount() <= minAmount) {
+        log.error(
+            "Could not create Bid due to amount being lesser than winning bid. auctionId {} ; DTO {} ; minAmount: {}",
+            auctionId,
+            dto,
+            minAmount);
+        throw new TradeRevInvalidInputException(
+            ErrorCode.BID_LESSER_THANOR_EQUAL_TO_WINNING_BID,
+            auctionId,
+            bid.getBidAmount(),
+            minAmount);
+      }
+      try {
+        CarBid newBid = repository.save(bid);
+        return newBid;
+      } catch (Exception e) {
+        log.error("Could not save bid : {} : because of exception : {}", bid, e.getMessage(), e);
+        if (e instanceof SQLIntegrityConstraintViolationException) {
+          throw new TradeRevInvalidInputException(
+              ErrorCode.BID_LESSER_THANOR_EQUAL_TO_WINNING_BID,
+              auctionId,
+              bid.getBidAmount(),
+              currentWinningBid.getBidAmount());
+        }
+        throw e;
+      }
     }
     log.error(
         "Could not create Bid due to conflict/issue in auctionIds. auctionId {} ; DTO {} ",
         auctionId,
         dto);
-    throw new TradeRevIllegalStateException(
+    throw new TradeRevInvalidInputException(
         ErrorCode.CONFLICTING_AUCTION_IDS,
         auctionId,
         dto.getInfo() != null ? dto.getInfo().getCarAuctionId() : null);
@@ -77,33 +138,34 @@ public class SqlBackedCarBidService extends AbstractResourceService<CarBid, CarB
                     new TradeRevResourceNotFoundException(
                         ErrorCode.BID_RESOURCE_NOT_FOUND, auctionId, bidId));
     if (bid.getCarAuction().getId() != auctionId) {
-      throw new TradeRevResourceNotFoundException(
-          ErrorCode.BID_RESOURCE_NOT_FOUND, auctionId, bidId);
+      log.error("Cannot Get Bid. BidId {} does not belong to Auction {}", bidId, auctionId);
+      throw new TradeRevInvalidInputException(
+          ErrorCode.WRONG_AUCTION_TO_BID_MAPPING, bidId, auctionId);
     }
     return bid;
   }
 
   @Override
-  public List<CarBid> getCarBids(Integer auctionId, Integer page, Integer size, String sortBy)
+  public List<CarBid> getCarBids(
+      Integer auctionId, Integer page, Integer size, String sortBy, ResourceSortingOrder order)
       throws TradeRevResourceNotFoundException {
-    Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-    Page<CarBid> bidsPage = repository.findAll(pageable);
+    Pageable pageable = PageRequest.of(page, size, getSortingOrder(sortBy, order));
+    CarBidRepository carBidRepository = (CarBidRepository) repository;
+    CarAuction carAuction = CarAuction.createNew();
+    carAuction.setId(auctionId);
+    Page<CarBid> bidsPage = carBidRepository.findByCarAuction(carAuction, pageable);
     if (bidsPage == null || bidsPage.isEmpty()) {
-      throw new TradeRevResourceNotFoundException(ErrorCode.BIDS_NOT_FOUND, page, size, sortBy);
+      // return empty list
+      log.info("No bids found for AuctionId {}", auctionId);
+      return new ArrayList<>();
     }
     List<CarBid> bids = bidsPage.toList();
     return bids;
   }
 
   @Override
-  public CarBid getWinningBid(Integer auctionId) throws TradeRevIllegalStateException {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
   @Deprecated
-  public CarBid createResource(CarBidRequestDto dto) throws TradeRevIllegalStateException {
+  public CarBid createResource(CarBidRequestDto dto) throws TradeRevInvalidInputException {
     throw new UnsupportedOperationException(
         "This operation - SqlBackedCarBidService.createResource(CarBidRequestDto dto) - is not supported.");
   }
@@ -111,7 +173,7 @@ public class SqlBackedCarBidService extends AbstractResourceService<CarBid, CarB
   @Override
   @Deprecated
   public CarBid modifyResource(Integer id, CarBidRequestDto dto)
-      throws TradeRevIllegalStateException {
+      throws TradeRevInvalidInputException {
     throw new UnsupportedOperationException(
         "This operation - SqlBackedCarBidService.modifyResource(Integer id, CarBidRequestDto dto) - is not supported.");
   }

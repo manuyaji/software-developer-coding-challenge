@@ -45,4 +45,9 @@ public class User extends IntegerIdUpdatableTable {
 
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
   private UserInfo userInfo;
+
+  public static User createNew() {
+    User user = new User();
+    return user;
+  }
 }

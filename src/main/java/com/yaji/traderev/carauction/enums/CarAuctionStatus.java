@@ -7,7 +7,8 @@ public enum CarAuctionStatus {
   READY_TO_AUCTION(210),
   AUCTION_IN_PROGRESS(300),
   SOLD(400),
-  UNSOLD(500);
+  UNSOLD(500),
+  UNSOLD_WITHOUT_AUCTIONING(510);
 
   private int statusCode;
 
@@ -35,6 +36,8 @@ public enum CarAuctionStatus {
         return SOLD;
       case 500:
         return UNSOLD;
+      case 510:
+        return UNSOLD_WITHOUT_AUCTIONING;
       default:
         return null;
     }

@@ -45,7 +45,7 @@ public class MetricsFilter extends HttpFilter {
   private void collectData(
       HttpServletRequest request, HttpServletResponse response, long appResponseTime) {
     try {
-      Integer responseSize = Integer.parseInt(response.getHeader("content-length"));
+      // Integer responseSize = Integer.parseInt(response.getHeader("content-length"));
       RequestResponseData data =
           RequestResponseData.builder()
               .apiPath(request.getRequestURI())
@@ -53,7 +53,7 @@ public class MetricsFilter extends HttpFilter {
               .processingTimeMs(appResponseTime)
               .requestUrl(request.getRequestURL().toString())
               .responseCode(response.getStatus())
-              .responseSize(responseSize)
+              //      .responseSize(responseSize)
               .serverIp(request.getLocalAddr())
               .serverName(request.getServerName())
               .requestSize(request.getContentLength())

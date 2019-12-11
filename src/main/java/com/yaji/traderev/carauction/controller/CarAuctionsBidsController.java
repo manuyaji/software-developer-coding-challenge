@@ -3,10 +3,10 @@ package com.yaji.traderev.carauction.controller;
 import com.yaji.traderev.carauction.controller.constants.ControllerConstants;
 import com.yaji.traderev.carauction.entity.CarAuction;
 import com.yaji.traderev.carauction.entity.CarBid;
+import com.yaji.traderev.carauction.enums.ResourceSortingOrder;
 import com.yaji.traderev.carauction.models.requestdto.CarAuctionRequestDto;
 import com.yaji.traderev.carauction.models.requestdto.CarBidRequestDto;
 import com.yaji.traderev.carauction.models.responsedto.ResponseDto;
-import com.yaji.traderev.carauction.repository.db.CarAuctionRepository;
 import com.yaji.traderev.carauction.services.auctions.ICarAuctionService;
 import com.yaji.traderev.carauction.services.bids.ICarBidService;
 import com.yaji.traderev.carauction.util.DtoToEntityMergingUtil;
@@ -30,7 +30,6 @@ public class CarAuctionsBidsController extends BaseController {
   public static final String AUCTIONS_BASE_PATH = "/auctions";
   public static final String BIDS_BASE_PATH_FORMAT = AUCTIONS_BASE_PATH + "/%d/bids";
 
-  @Autowired private CarAuctionRepository repository;
   @Autowired private DtoToEntityMergingUtil dtoToEntityMergingUtil;
   @Autowired private ICarBidService carBidService;
   @Autowired private ICarAuctionService carAuctionService;
@@ -90,7 +89,20 @@ public class CarAuctionsBidsController extends BaseController {
     CarAuction auction = carAuctionService.modifyResource(id, carAuctionReqDto);
 
     ResponseDto ret = buildResponseDto(auction, AUCTIONS_BASE_PATH + "/" + auction.getId());
-    return new ResponseEntity(ret, HttpStatus.CREATED);
+    return new ResponseEntity(ret, HttpStatus.OK);
+  }
+
+  @RequestMapping(
+      path = "/{auctionId}/closeAuction",
+      method = RequestMethod.POST,
+      produces = "application/json")
+  public ResponseEntity<ResponseDto<CarAuction>> closeAuction(
+      @PathVariable("auctionId") Integer auctionId) {
+    CarAuction auction = carAuctionService.closeAuction(auctionId);
+    log.info("Returning Closing Auction {}", auction);
+    ResponseDto ret =
+        buildResponseDto(auction, AUCTIONS_BASE_PATH + "/" + auction.getId() + "/closeAuction");
+    return new ResponseEntity<ResponseDto<CarAuction>>(ret, HttpStatus.OK);
   }
 
   /*
@@ -98,14 +110,27 @@ public class CarAuctionsBidsController extends BaseController {
    */
 
   @RequestMapping(
+      path = "/{auctionId}/bids/winningBid",
+      method = RequestMethod.GET,
+      produces = "application/json")
+  public ResponseEntity<ResponseDto<CarBid>> getWinningBid(
+      @PathVariable("auctionId") Integer auctionId) {
+    CarBid bid = carAuctionService.getWinningBid(auctionId);
+    log.info("Returning Winning Bid {}", bid);
+    ResponseDto ret =
+        buildResponseDto(bid, String.format(BIDS_BASE_PATH_FORMAT, auctionId) + "/winningBid");
+    return new ResponseEntity<ResponseDto<CarBid>>(ret, HttpStatus.OK);
+  }
+
+  @RequestMapping(
       path = "/{auctionId}/bids/{id}",
       method = RequestMethod.GET,
       produces = "application/json")
   public ResponseEntity<ResponseDto<CarBid>> getCarBid(
       @PathVariable("auctionId") Integer auctionId, @PathVariable("id") Integer id) {
-    log.info("Getting CarBid ID[{}]", id);
+    log.info("Getting CarBidTable ID[{}]", id);
     CarBid bid = carBidService.getCarBid(auctionId, id);
-    log.info("Returning CarBid {}", bid);
+    log.info("Returning CarBidTable {}", bid);
     ResponseDto ret =
         buildResponseDto(bid, String.format(BIDS_BASE_PATH_FORMAT, auctionId) + "/" + id);
     return new ResponseEntity<ResponseDto<CarBid>>(ret, HttpStatus.OK);
@@ -139,7 +164,8 @@ public class CarAuctionsBidsController extends BaseController {
         page,
         size,
         sortBy);
-    List<CarBid> bids = carBidService.getCarBids(auctionId, page, size, sortBy);
+    List<CarBid> bids =
+        carBidService.getCarBids(auctionId, page, size, sortBy, ResourceSortingOrder.DESCENDING);
     log.info("For Auction [{}], returning CarBids {}", auctionId, bids);
     ResponseDto ret =
         buildResponseDto(bids, String.format(BIDS_BASE_PATH_FORMAT, auctionId), page, size, sortBy);
@@ -172,6 +198,6 @@ public class CarAuctionsBidsController extends BaseController {
     CarBid bid = carBidService.modifyCarBid(auctionId, id, carBidReqDto);
     ResponseDto ret =
         buildResponseDto(bid, String.format(BIDS_BASE_PATH_FORMAT, auctionId) + "/" + id);
-    return new ResponseEntity(ret, HttpStatus.CREATED);
+    return new ResponseEntity(ret, HttpStatus.OK);
   }
 }

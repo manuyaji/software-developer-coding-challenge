@@ -1,5 +1,7 @@
 package com.yaji.traderev.carauction.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.yaji.traderev.carauction.exception.translation.ErrorPropertiesReader;
 import com.yaji.traderev.carauction.logs.IdGenerator;
 import com.yaji.traderev.carauction.logs.UUIDGenerator;
@@ -16,14 +18,21 @@ import com.yaji.traderev.carauction.util.DtoToEntityMergingUtil;
 import com.yaji.traderev.carauction.util.LocaleUtil;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class BeanCreation {
+public class BeanCreation implements InitializingBean {
 
   @Autowired private MetricsConfig metricsConfig;
+  @Autowired private ObjectMapper objectMapper;
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    objectMapper.registerModule(new JavaTimeModule());
+  }
 
   @Bean
   public IdGenerator idGenerator() {

@@ -2,7 +2,7 @@ package com.yaji.traderev.carauction.services.user;
 
 import com.yaji.traderev.carauction.entity.UserInfo;
 import com.yaji.traderev.carauction.enums.ErrorCode;
-import com.yaji.traderev.carauction.exception.TradeRevIllegalStateException;
+import com.yaji.traderev.carauction.exception.TradeRevInvalidInputException;
 import com.yaji.traderev.carauction.exception.TradeRevResourceNotFoundException;
 import com.yaji.traderev.carauction.models.requestdto.UserInfoRequestDto;
 import com.yaji.traderev.carauction.services.AbstractResourceService;
@@ -15,7 +15,7 @@ public class SqlBackedUserInfoService extends AbstractResourceService<UserInfo, 
   @Autowired private DtoToEntityMergingUtil dtoToEntityMergingUtil;
 
   @Override
-  public UserInfo createResource(UserInfoRequestDto dto) throws TradeRevIllegalStateException {
+  public UserInfo createResource(UserInfoRequestDto dto) throws TradeRevInvalidInputException {
     UserInfo userInfo = dtoToEntityMergingUtil.mergeUserInfoWithDto(null, dto);
     UserInfo newUserInfo = repository.save(userInfo);
     return newUserInfo;
@@ -23,7 +23,7 @@ public class SqlBackedUserInfoService extends AbstractResourceService<UserInfo, 
 
   @Override
   public UserInfo modifyResource(Integer id, UserInfoRequestDto dto)
-      throws TradeRevIllegalStateException {
+      throws TradeRevInvalidInputException {
     UserInfo original =
         repository
             .findById(id)

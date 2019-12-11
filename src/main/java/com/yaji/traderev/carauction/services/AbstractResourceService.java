@@ -1,6 +1,7 @@
 package com.yaji.traderev.carauction.services;
 
 import com.yaji.traderev.carauction.enums.ErrorCode;
+import com.yaji.traderev.carauction.enums.ResourceSortingOrder;
 import com.yaji.traderev.carauction.exception.TradeRevResourceNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,14 @@ public abstract class AbstractResourceService<RESOURCE, DTO>
     }
     List<RESOURCE> resources = resourcesPage.toList();
     return resources;
+  }
+
+  public Sort getSortingOrder(String sortByProperty, ResourceSortingOrder order) {
+    Sort sort = Sort.by(sortByProperty);
+    if (ResourceSortingOrder.DESCENDING.equals(order)) {
+      sort = sort.descending();
+    }
+    return sort;
   }
 
   public abstract ErrorCode getResourceNotFoundErrorCode();

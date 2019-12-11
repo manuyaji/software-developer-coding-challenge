@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
 public class CarBid extends IntegerIdUpdatableTable {
 
   @JoinColumn(name = "auction_id")
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.EAGER)
   private CarAuction carAuction;
 
   @Column(name = "time_of_bid")
@@ -27,6 +27,24 @@ public class CarBid extends IntegerIdUpdatableTable {
   private Double bidAmount;
 
   @JoinColumn(name = "bid_by")
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.EAGER)
   private User bidBy;
+
+  public static CarBid createNew(CarAuction carAuction) {
+    CarBid carBid = new CarBid();
+    User bidBy = new User();
+    carBid.setBidBy(bidBy);
+    carBid.setCarAuction(carAuction);
+    return carBid;
+  }
+
+  public static CarBid createNew(Integer carAuctionId) {
+    CarAuction carAuction = new CarAuction();
+    carAuction.setId(carAuctionId);
+    CarBid carBid = new CarBid();
+    User bidBy = new User();
+    carBid.setBidBy(bidBy);
+    carBid.setCarAuction(carAuction);
+    return carBid;
+  }
 }

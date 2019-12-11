@@ -108,6 +108,28 @@ public class CarAuctionsBidsController extends BaseController {
   /*
    * CAR AUCTION BIDS APIs
    */
+  
+  @RequestMapping(
+	      path = "/{auctionId}/bids/history",
+	      method = RequestMethod.GET,
+	      produces = "application/json")
+	  public ResponseEntity<ResponseDto<CarBid>> getHistoryOfAnAuction(
+	      @PathVariable("auctionId") Integer auctionId, @RequestParam(
+	              required = false,
+	              name = "page",
+	              defaultValue = ControllerConstants.DEFAULT_PAGE_STR)
+	          Integer page,
+	      @RequestParam(
+	              required = false,
+	              name = "size",
+	              defaultValue = ControllerConstants.DEFAULT_SIZE_STR)
+	          Integer size) {
+	    List<CarBid> bids = carAuctionService.getHistory(auctionId, page, size, ResourceSortingOrder.ASCENDING);
+	    log.info("Returning Winning Bid {}", bids);
+	    ResponseDto ret =
+	        buildResponseDto(bids, String.format(BIDS_BASE_PATH_FORMAT, auctionId) + "/winningBid");
+	    return new ResponseEntity<ResponseDto<CarBid>>(ret, HttpStatus.OK);
+	  }
 
   @RequestMapping(
       path = "/{auctionId}/bids/winningBid",

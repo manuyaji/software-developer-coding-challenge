@@ -38,7 +38,7 @@ public class CarAuctionsBidsController extends BaseController {
   @RequestMapping(path = "/{id}", method = RequestMethod.GET, produces = "application/json")
   public ResponseEntity<ResponseDto<CarAuction>> getCarAuction(@PathVariable("id") Integer id) {
     log.info("Getting CarAuction ID[{}]", id);
-    CarAuction auction = carAuctionService.getCarAuction(id);
+    CarAuction auction = carAuctionService.getResource(id);
     log.info("Returning CarAuction {}", auction);
     ResponseDto ret = buildResponseDto(auction, AUCTIONS_BASE_PATH + "/" + id);
     return new ResponseEntity<ResponseDto<CarAuction>>(ret, HttpStatus.OK);
@@ -62,7 +62,7 @@ public class CarAuctionsBidsController extends BaseController {
               defaultValue = ControllerConstants.DEFAULT_SORTBY)
           String sortBy) {
     log.info("Getting CarAuctions Page[{}] ; Size[{}] ; SortBy[{}]", page, size, sortBy);
-    List<CarAuction> auctions = carAuctionService.getCarAuctions(page, size, sortBy);
+    List<CarAuction> auctions = carAuctionService.getResources(page, size, sortBy);
     log.info("Returning CarAuctions {}", auctions);
     ResponseDto ret = buildResponseDto(auctions, AUCTIONS_BASE_PATH, page, size, sortBy);
     return new ResponseEntity(ret, HttpStatus.OK);
@@ -74,7 +74,7 @@ public class CarAuctionsBidsController extends BaseController {
       produces = "application/json")
   public ResponseEntity<ResponseDto<CarAuction>> createCarAuction(
       @RequestBody CarAuctionRequestDto carAuctionReqDto) {
-    CarAuction newAuction = carAuctionService.createCarAuction(carAuctionReqDto);
+    CarAuction newAuction = carAuctionService.createResource(carAuctionReqDto);
     ResponseDto ret = buildResponseDto(newAuction, AUCTIONS_BASE_PATH + "/" + newAuction.getId());
     return new ResponseEntity(ret, HttpStatus.CREATED);
   }
@@ -87,7 +87,7 @@ public class CarAuctionsBidsController extends BaseController {
   public ResponseEntity<ResponseDto<CarAuction>> modifyCarAuction(
       @PathVariable("id") Integer id, @RequestBody CarAuctionRequestDto carAuctionReqDto) {
 
-    CarAuction auction = carAuctionService.modifyCarAuction(id, carAuctionReqDto);
+    CarAuction auction = carAuctionService.modifyResource(id, carAuctionReqDto);
 
     ResponseDto ret = buildResponseDto(auction, AUCTIONS_BASE_PATH + "/" + auction.getId());
     return new ResponseEntity(ret, HttpStatus.CREATED);

@@ -29,7 +29,7 @@ public class CarInfoController extends BaseController {
   @RequestMapping(path = "/{id}", method = RequestMethod.GET, produces = "application/json")
   public ResponseEntity<ResponseDto<CarInfo>> getCarInfo(@PathVariable("id") Integer id) {
     log.info("Getting CarInfo ID[{}]", id);
-    CarInfo carInfo = carInfoService.getCarInfo(id);
+    CarInfo carInfo = carInfoService.getResource(id);
     log.info("Returning CarInfo {}", carInfo);
     ResponseDto ret = buildResponseDto(carInfo, BASE_PATH + "/" + id);
     return new ResponseEntity<ResponseDto<CarInfo>>(ret, HttpStatus.OK);
@@ -54,7 +54,7 @@ public class CarInfoController extends BaseController {
           String sortBy) {
     log.info("Getting CarInfos Page[{}] ; Size[{}] ; SortBy[{}]", page, size, sortBy);
 
-    List<CarInfo> carInfos = carInfoService.getCarInfos(page, size, sortBy);
+    List<CarInfo> carInfos = carInfoService.getResources(page, size, sortBy);
     log.info("Returning CarInfos {}", carInfos);
     ResponseDto ret = buildResponseDto(carInfos, BASE_PATH, page, size, sortBy);
     return new ResponseEntity(ret, HttpStatus.OK);
@@ -66,7 +66,7 @@ public class CarInfoController extends BaseController {
       produces = "application/json")
   public ResponseEntity<ResponseDto<CarInfo>> createCarInfo(
       @RequestBody CarInfoRequestDto carInfoReqDto) {
-    CarInfo newCarInfo = carInfoService.createCarInfo(carInfoReqDto);
+    CarInfo newCarInfo = carInfoService.createResource(carInfoReqDto);
     ResponseDto ret = buildResponseDto(newCarInfo, BASE_PATH + "/" + newCarInfo.getId());
     return new ResponseEntity(ret, HttpStatus.CREATED);
   }
@@ -78,7 +78,7 @@ public class CarInfoController extends BaseController {
       produces = "application/json")
   public ResponseEntity<ResponseDto<CarInfo>> modifyCarInfo(
       @PathVariable("id") Integer id, @RequestBody CarInfoRequestDto carInfoReqDto) {
-    CarInfo carInfo = carInfoService.modifyCarInfo(id, carInfoReqDto);
+    CarInfo carInfo = carInfoService.modifyResource(id, carInfoReqDto);
     ResponseDto ret = buildResponseDto(carInfo, BASE_PATH + "/" + carInfo.getId());
     return new ResponseEntity(ret, HttpStatus.CREATED);
   }

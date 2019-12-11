@@ -5,7 +5,7 @@ import com.yaji.traderev.carauction.enums.ErrorCode;
 import com.yaji.traderev.carauction.exception.TradeRevIllegalStateException;
 import com.yaji.traderev.carauction.exception.TradeRevResourceNotFoundException;
 import com.yaji.traderev.carauction.models.requestdto.CarBidRequestDto;
-import com.yaji.traderev.carauction.repository.db.CarBidRepository;
+import com.yaji.traderev.carauction.services.AbstractResourceService;
 import com.yaji.traderev.carauction.util.DtoToEntityMergingUtil;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -19,9 +19,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 
 @Slf4j
-public class SqlBackedCarBidService implements ICarBidService {
+public class SqlBackedCarBidService extends AbstractResourceService<CarBid, CarBidRequestDto>
+    implements ICarBidService {
 
-  @Autowired private CarBidRepository repository;
   @Autowired private DtoToEntityMergingUtil dtoToEntityMergingUtil;
 
   @Override
@@ -99,5 +99,30 @@ public class SqlBackedCarBidService implements ICarBidService {
   public CarBid getWinningBid(Integer auctionId) throws TradeRevIllegalStateException {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  @Deprecated
+  public CarBid createResource(CarBidRequestDto dto) throws TradeRevIllegalStateException {
+    throw new UnsupportedOperationException(
+        "This operation - SqlBackedCarBidService.createResource(CarBidRequestDto dto) - is not supported.");
+  }
+
+  @Override
+  @Deprecated
+  public CarBid modifyResource(Integer id, CarBidRequestDto dto)
+      throws TradeRevIllegalStateException {
+    throw new UnsupportedOperationException(
+        "This operation - SqlBackedCarBidService.modifyResource(Integer id, CarBidRequestDto dto) - is not supported.");
+  }
+
+  @Override
+  public ErrorCode getResourceNotFoundErrorCode() {
+    return ErrorCode.BID_RESOURCE_NOT_FOUND;
+  }
+
+  @Override
+  public ErrorCode getResourcesNotFoundErrorCode() {
+    return ErrorCode.BIDS_NOT_FOUND;
   }
 }

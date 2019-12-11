@@ -4,9 +4,10 @@ import com.yaji.traderev.carauction.entity.CarBid;
 import com.yaji.traderev.carauction.exception.TradeRevIllegalStateException;
 import com.yaji.traderev.carauction.exception.TradeRevResourceNotFoundException;
 import com.yaji.traderev.carauction.models.requestdto.CarBidRequestDto;
+import com.yaji.traderev.carauction.services.IResourceService;
 import java.util.List;
 
-public interface ICarBidService {
+public interface ICarBidService extends IResourceService<CarBid, CarBidRequestDto> {
 
   public CarBid modifyCarBid(Integer auctionid, Integer carBidId, CarBidRequestDto dto)
       throws TradeRevIllegalStateException;

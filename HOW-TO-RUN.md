@@ -2,6 +2,17 @@
 1. Maven (>= 3.5)
 2. Java 8
 3. MySQL / MariaDB 
+4. Docker
+
+
+### RUNNING THE APPLICATION
+1. `git clone https://github.com/manuyaji/software-developer-coding-challenge.git`
+2. ```cd software-developer-coding-challenge```
+3. ```docker build -t carauction .```
+4. ```docker network create carauction-net```
+5. ```docker run --name carauctiondb --network carauction-net -e MYSQL_USER=manu -e MYSQL_PASSWORD=manu -e MYSQL_DATABASE=traderev -p 3306:3306 -d mysql/mysql-server:5.7```
+6. ```mysql --protocol=TCP -u manu -pmanu < traderev.sql```
+7. ```docker run --network carauction-net --name carauction-app -p 8080:8080 -d carauction```
 
 ### PRE-CONFIGURATIONS
 1. Change the database configurations in `application.properties` according to the MySQL/MariaDB setup that you are going to use. In particular, you will have to check `spring.datasource.url` , `spring.datasource.url` , `spring.datasource.password` , `spring.datasource.driver-class-name` , `spring.jpa.properties.hibernate.dialect`. 

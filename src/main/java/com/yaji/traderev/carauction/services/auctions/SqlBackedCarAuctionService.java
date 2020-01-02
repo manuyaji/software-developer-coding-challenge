@@ -1,14 +1,5 @@
 package com.yaji.traderev.carauction.services.auctions;
 
-import java.util.List;
-
-import javax.transaction.Transactional;
-
-import org.jboss.logging.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Modifying;
-
 import com.yaji.traderev.carauction.constants.HeaderConstants;
 import com.yaji.traderev.carauction.entity.CarAuction;
 import com.yaji.traderev.carauction.entity.CarBid;
@@ -24,8 +15,12 @@ import com.yaji.traderev.carauction.models.requestdto.CarAuctionRequestDto;
 import com.yaji.traderev.carauction.services.AbstractResourceService;
 import com.yaji.traderev.carauction.services.bids.ICarBidService;
 import com.yaji.traderev.carauction.util.DtoToEntityMergingUtil;
-
+import java.util.List;
+import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.jboss.logging.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 
 @Slf4j
 public class SqlBackedCarAuctionService
@@ -143,12 +138,14 @@ public class SqlBackedCarAuctionService
     throw new TradeRevResourceNotFoundException(ErrorCode.AUCTION_RESOURCE_NOT_FOUND, auctionId);
   }
 
-@Override
-public List<CarBid> getHistory(Integer auctionId, Integer page, Integer size, ResourceSortingOrder order) throws TradeRevInvalidInputException, TradeRevResourceNotFoundException {
-	List<CarBid> ret = carBidService.getCarBids(auctionId, page, size, ColumnNameConstants.CarBidTable.CAR_BID_TIME_OF_BID, order);
-	log.info("Returning history of auction {} : {}", auctionId, ret);
-	return ret;
-}
-  
-  
+  @Override
+  public List<CarBid> getHistory(
+      Integer auctionId, Integer page, Integer size, ResourceSortingOrder order)
+      throws TradeRevInvalidInputException, TradeRevResourceNotFoundException {
+    List<CarBid> ret =
+        carBidService.getCarBids(
+            auctionId, page, size, ColumnNameConstants.CarBidTable.CAR_BID_TIME_OF_BID, order);
+    log.info("Returning history of auction {} : {}", auctionId, ret);
+    return ret;
+  }
 }

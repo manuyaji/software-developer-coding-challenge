@@ -49,14 +49,14 @@
      
      <!-- CHOOSE ONE AMONG DEPENDENCY FROM BELOW -->
      
-     <!-- <dependency>
+     <dependency>
          <groupId>mysql</groupId>
          <artifactId>mysql-connector-java</artifactId>
-     </dependency> -->
-     <dependency>
+     </dependency>
+     <!-- <dependency>
       	<groupId>org.mariadb.jdbc</groupId>
       	<artifactId>mariadb-java-client</artifactId>
-     </dependency>
+     </dependency> -->
     
      <!-- CHOOSE ONE AMONG DEPENDENCY FROM ABOVE -->
     
